@@ -1,4 +1,16 @@
-library(RColorBrewer)
+p <- c("RColorBrewer", "reshape2", "ggplot2", "dplyr")
+
+usePackage <- function(p) {
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep=TRUE, repos="http://cran.us.r-project.org/")
+  suppressWarnings(suppressMessages(invisible(require(p, character.only=TRUE))))
+}
+invisible(lapply(p, usePackage))
+## clean R environment
+rm(list = ls())
+setwd('./')
+
+
 #I/O---------------------------------------------------
 table <- read.table("../data/Abundance_Stat.all.xls", sep = "\t", header = T, comment.char = "")
 rownames(table) <- table$Specie

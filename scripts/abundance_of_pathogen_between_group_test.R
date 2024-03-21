@@ -1,3 +1,19 @@
+#-------------------------------
+# install and load necessary libraries for data analyses
+#-------------------------------
+p <- c("reshape2","ggplot2", "dplyr", "ROCR", "doParallel", "parallel", "tidyverse", "foreach","viridis", "doMC", "plyr", "rlang", "compositions")
+usePackage <- function(p) {
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep=TRUE, repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN/")
+  suppressWarnings(suppressMessages(invisible(require(p, character.only=TRUE))))
+}
+invisible(lapply(p, usePackage))
+registerDoParallel(cores=4)
+
+rm(list = ls())
+setwd("./")
+
+
 source("BetweenGroup.test.R")
 #I/O---------------------------------------------------
 table <- read.table("../data/Abundance_Stat.all.xls", sep = "\t", header = T, comment.char = "")
@@ -14,17 +30,6 @@ if(! dir.exists(output_dir)) {
   dir.create(output_dir)
 }
 
-#-------------------------------
-# install and load necessary libraries for data analyses
-#-------------------------------
-p <- c("reshape2","ggplot2", "dplyr", "ROCR", "doParallel", "parallel", "tidyverse", "foreach","viridis", "doMC", "plyr", "rlang")
-usePackage <- function(p) {
-  if (!is.element(p, installed.packages()[,1]))
-    install.packages(p, dep=TRUE, repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN/")
-  suppressWarnings(suppressMessages(invisible(require(p, character.only=TRUE))))
-}
-invisible(lapply(p, usePackage))
-registerDoParallel(cores=4)
 
 # identify differentially abundant features
 t_table <- t(table)

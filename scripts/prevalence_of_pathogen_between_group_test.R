@@ -1,4 +1,15 @@
-library(RColorBrewer)
+p <- c("RColorBrewer", "reshape2", "ggplot2", "scales")
+
+usePackage <- function(p) {
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep=TRUE, repos="http://cran.us.r-project.org/")
+  suppressWarnings(suppressMessages(invisible(require(p, character.only=TRUE))))
+}
+invisible(lapply(p, usePackage))
+## clean R environment
+rm(list = ls())
+setwd('./')
+
 table <- read.table("../data/Abundance_Stat.all.xls", sep = "\t", header = T, comment.char = "")
 rownames(table) <- table$Specie
 table <- table[, 8:ncol(table)]
@@ -46,13 +57,17 @@ shapiro.test(y)
 result <- wilcox.test(x, y, paired = TRUE)
 print(result)
 
-library(reshape2)
 Prevalence_of_orp$Pathogen <- rownames(Prevalence_of_orp)
 Prevalence_df <- melt(Prevalence_of_orp, id.vars = "Pathogen", variable.name = "type", value.name = "value")
 
-library(ggplot2)
-library(viridis)
-color_vector <- viridis(length(unique(Prevalence_df$Pathogen)))
+palette1 <- brewer.pal(9, "Pastel1")
+palette2 <- brewer.pal(8, "Set3")
+palette3 <- brewer.pal(8, "Set2")
+palette4 <- brewer.pal(8, "Set1")
+
+
+# 将多个调色板合并成一个向量
+color_vector <- c(palette1, palette2, palette3, palette4)
 
 Prevalence_df <- subset(Prevalence_df, type != "all_type")
 
